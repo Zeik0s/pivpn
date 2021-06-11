@@ -1,9 +1,84 @@
 # Information of Latest updates
 
-This file has the objective of describing the major changes for each merge from test to master in a similar way as a
-patch release notes.
+This file has the objective of describing the major changes for each merge from test to master in a similar way as a patch release notes.
 
 Everytime Test branch is merged into master, a new entry should be created with the date and changes being merged.
+
+## May 7th 2021
+
+General code quality fixes
+ - #1253, #1254, #1256, #1272
+Disabled progress bar when running unattended
+ - #1276
+Added wireguard MTU support when setting up unattended
+ - #1278
+Support for multiple setupVars while via unattended setup
+- #1279
+Fix for currupted QR code display in multiple fonts
+ - #1305
+
+## Jan 26th 2021
+
+Fixed: 
+  - #1231 Return proper exit codes
+Improvements
+  - First implementation of Automated testing with travisCI
+
+
+## Jan 17th 2021
+
+- Issues Fixed:
+  - #1180 Incorrect system detection
+  - #1212 Confusing prompt when removing wireguard config
+  - #1204 Package cache update not workig
+- New Features
+  - #1111 Possibility to turn on/off single wireguard client configs
+  - #1177 Possibility to change AllowedIPs 
+- English corrections
+
+## Nov 4th 2020
+
+- Official support for Ubuntu Server 20.04 on Raspberry Pi (32-bit and 64-bit).
+- Handle special characters better when managing OpenVPN clients.
+- Show expired OpenVPN certificates as such when using 'pivpn -l'.
+- Improved OpenVPN and WireGuard availability detection.
+- Reload WireGuard instead of restarting so it doesn't kick existing clients.
+
+## Jul 24th 2020
+
+- Added ability to remove client by index. For example, when the user is presented with '2) phone' he can remove the client by typing either '2' or 'phone'.
+- Added ability to remove a client non-interactively with 'pivpn -r phone -y'.
+- When choosing to use Pi-hole, do not whitelist the specific VPN interface. Instead, use Pi-hole's built-in command 'pihole -a -i local' to allow listening from on the VPN interface. DNS resolution on the LAN shouldn't break anymore in some circumstances if the user changes Pi-hole's listening behavior after installing PiVPN.
+
+## Jun 9th 2020
+
+- Dual VPN mode, use both WireGuard and OpenVPN by running the installer script over an existing installation.
+- Generate a unique pre-shared key for each client as per the WireGuard protocol to improve post-quantum resistance.
+- Added the ability to regenerate the .ovpn config when the client template changes (issue #281). Use 'pivpn -a -o'.
+- Added the '--show-unsupported-nics' argument to the install script for those who need PiVPN on virtual servers where the available network interfaces may not be detected reliably (issue #994).
+- Clone the git repo to '/usr/local/src/pivpn' and replace all other locations with symlinks (issue #695).
+- Simplified the OpenVPN installation flow by moving some settings behind a "customize" dialog.
+-  Temporarily disable 'pivpn -up' until a proper update strategy is defined. See [this commit](https://github.com/pivpn/pivpn/commit/f06f6d79203c29ebd785f860a81a15e9caac4fc9) for more information.
+
+## Mar 17th 2020
+
+- Switch to Bullseye repository on Debian/Raspbian. The bullseye repository is less likely to offer broken packages and it's also supported by Raspbian, meaning there is no need to manually compile WireGuard on older Raspberry Pis.
+- Adding a PPA on Ubuntu requires 'software-properties-common' with may not be installed on servers.
+- Avoid IPv6 leak by routing IPv6 through WireGuard.
+- Download OpenVPN key via HTTPS if retrieving via keyserver fails.
+- Show connected clients data rates with dotted decimal notation using 'pivpn -c -b'. It's useful because the human readable format does not offer enough precision to tell if a client is sending very little data.
+- Use 'apt-cache policy' to decide whether we need a repository or not.
+- Use lowest APT pin priority that allows package upgrades (more information on pull request [#963](https://github.com/pivpn/pivpn/pull/963) and [#983](https://github.com/pivpn/pivpn/pull/983)).
+
+## Feb 17th 2020
+
+- When offering to use Pi-hole, identify VPN clients via clientname.pivpn using a dedicated hosts file. Clients can now be resolved by their names and also show up in the Pi-hole dashboard.
+- Decide whether to tell dnsmasq to listen on the VPN interface depending on the user settings. The default Pi-hole listening behavior is **Listen only on interface whatever**, which means dnsmasq needs to know the additional VPN interface. However, if the user has **Listen on all interfaces** or **Listen on all interfaces, permit all origins**, then, there is no need to add the interface (self-explanatory).
+- Set static IPs by default when using OpenVPN.
+- Restrict access to automatic backups (.tar.gz) of **/etc/wireguard** and **/etc/openvpn** to root.
+- Drop libmnl-dev requirement on armv6l as it's not required anymore to build wireguard-tools.
+- Require apt-transport-https on Ubuntu < Bionic and Debian < Buster as those older version have APT without HTTPS repositories support and the script uses them.
+- Import OpenVPN PGP key from keyserver as it should be more secure than downloading from the website since we specifically tell the keyserver which key we want, referring to its fingerprint.
 
 ## Jan 31th 2020
 

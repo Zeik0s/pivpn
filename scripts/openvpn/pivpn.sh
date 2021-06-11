@@ -10,61 +10,56 @@ if [[ ! $EUID -eq 0 ]];then
   fi
 fi
 
+scriptDir="/opt/pivpn"
+vpn="openvpn"
+
 function makeOVPNFunc {
     shift
-    $SUDO /opt/pivpn/makeOVPN.sh "$@"
-    exit 0
+    $SUDO ${scriptDir}/${vpn}/makeOVPN.sh "$@"
+    exit "$?"
 }
 
 function listClientsFunc {
-    $SUDO /opt/pivpn/clientStat.sh
-    exit 0
+    shift
+    $SUDO ${scriptDir}/${vpn}/clientStat.sh "$@"
+    exit "$?"
 }
 
 function listOVPNFunc {
-    $SUDO /opt/pivpn/listOVPN.sh
-    exit 0
+    $SUDO ${scriptDir}/${vpn}/listOVPN.sh
+    exit "$?"
 }
 
 function debugFunc {
     echo "::: Generating Debug Output"
-    $SUDO /opt/pivpn/pivpnDebug.sh | tee /tmp/debug.txt
+    $SUDO ${scriptDir}/${vpn}/pivpnDebug.sh | tee /tmp/debug.log
     echo "::: "
     echo "::: Debug output completed above."
-    echo "::: Copy saved to /tmp/debug.txt"
+    echo "::: Copy saved to /tmp/debug.log"
     echo "::: "
-    exit 0
+    exit "$?"
 }
 
 function removeOVPNFunc {
     shift
-    $SUDO /opt/pivpn/removeOVPN.sh "$@"
-    exit 0
+    $SUDO ${scriptDir}/${vpn}/removeOVPN.sh "$@"
+    exit "$?"
 }
 
 function uninstallFunc {
-    $SUDO /opt/pivpn/uninstall.sh
-    exit 0
-}
-
-function versionFunc {
-    printf "\e[1mVersion 1.9\e[0m\n"
+    $SUDO ${scriptDir}/uninstall.sh "${vpn}"
+    exit "$?"
 }
 
 function update {
-
     shift
-    $SUDO /opt/pivpn/update.sh "$@"
-    exit 0
-
-
+    $SUDO ${scriptDir}/update.sh "$@"
+    exit "$?"
 }
 
 function backup {
-
-    $SUDO /opt/pivpn/backup.sh
-    exit 0
-
+    $SUDO ${scriptDir}/backup.sh "${vpn}"
+    exit "$?"
 }
 
 
@@ -93,13 +88,12 @@ fi
 # Handle redirecting to specific functions based on arguments
 case "$1" in
 "-a" | "add"                ) makeOVPNFunc "$@";;
-"-c" | "clients"            ) listClientsFunc;;
+"-c" | "clients"            ) listClientsFunc "$@";;
 "-d" | "debug"              ) debugFunc;;
 "-l" | "list"               ) listOVPNFunc;;
 "-r" | "revoke"             ) removeOVPNFunc "$@";;
 "-h" | "help"               ) helpFunc;;
 "-u" | "uninstall"          ) uninstallFunc;;
-"-v"                        ) versionFunc;;
 "-up"| "update"             ) update "$@" ;;
 "-bk"| "backup"             ) backup;;
 *                           ) helpFunc;;
